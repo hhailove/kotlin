@@ -66,7 +66,7 @@ class ScriptDependenciesUpdater(
 
         val scriptDef = file.findScriptDefinition(project) ?: return ScriptDependencies.Empty
 
-        fileAttributeLoader.updateDependencies(file, scriptDef)
+        fileAttributeLoader.loadDependencies(file, scriptDef)
 
         updateDependencies(file, scriptDef)
 
@@ -92,11 +92,13 @@ class ScriptDependenciesUpdater(
     }
 
     private fun updateDependencies(file: VirtualFile, scriptDef: KotlinScriptDefinition) {
+        if (!cache.shouldRunDependenciesUpdate(file)) return
+
         val loader = when {
             isAsyncDependencyResolver(scriptDef) -> asyncLoader
             else -> syncLoader
         }
-        loader.updateDependencies(file, scriptDef)
+        loader.loadDependencies(file, scriptDef)
     }
 
     private fun makeRootsChangeIfNeeded() {
