@@ -92,6 +92,7 @@ class ScriptDependenciesUpdater(
     }
 
     private fun updateDependencies(file: VirtualFile, scriptDef: KotlinScriptDefinition) {
+        if (!ScriptDefinitionsManager.getInstance(project).isReady()) return
         if (!cache.shouldRunDependenciesUpdate(file)) return
 
         val loader = when {
